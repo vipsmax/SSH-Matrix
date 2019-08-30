@@ -5,8 +5,8 @@ import os
 import render
 from matrixLine import MatrixLine
 import time  
-
-
+import coordinateQueue
+import threading
 import SQLconnector
 
 
@@ -22,12 +22,19 @@ order by NEWID ()"""
 cursor.execute(sql)
 dimensions = render.get_terminal_size_windows()
 
-os.system("cls")
 
+renderThread = threading.Thread(target=render.beginRenderLoop)
+renderThread.start()
+
+
+os.system("cls")
+threadGroup = []
+threadGroup.append(renderThread)
 for row in cursor.fetchall():
     var = MatrixLine(   row[1],
                         (random()*dimensions[0])-random()*len(row[1]),
                         random()*dimensions[1],
                         random()*1)
     var.start() 
+    threadGroup.append(var)
     time.sleep(0.33)
