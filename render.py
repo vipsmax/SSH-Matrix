@@ -6,7 +6,7 @@ import os
 from ctypes import *
 import struct
 from matrixLine import MatrixLine
-
+import coordinateQueue
 
 
 ###  https://rosettacode.org/wiki/Terminal_control/Cursor_positioning#Python ###
@@ -49,5 +49,8 @@ def get_terminal_size_windows():
         pass
 
 
-
+def beginRenderLoop():
+    while True:
+        coord = coordinateQueue.q.get()
+        print_at(coord["y"],coord["x"],coord["string"])
     

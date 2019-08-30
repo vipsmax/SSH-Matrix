@@ -2,6 +2,7 @@ import threading
 import time
 import render
 import console
+import coordinateQueue 
 from console import fg, bg, fx 
 
 class MatrixLine(threading.Thread):
@@ -17,22 +18,33 @@ class MatrixLine(threading.Thread):
 
     
     def draw(self):
-
+        
         targetX =   self.startX
         targetY =   self.startY+self.position
         lastY =     self.startY+self.position-1
         lastChar =  self.string[self.position-1:self.position]
         targetChar = self.string[self.position:self.position+1]
         if self.position == 0:
-            render.print_at(targetY,targetX,fg.white+targetChar )
+            obj = {}
+            obj["x"] = targetX
+            obj["y"] = targetY
+            obj["string"] = fg.white+targetChar
+            coordinateQueue.q.put(obj)
             
         elif self.position > len(self.string):
             return False
         else:
 
-            
-            render.print_at(lastY,  targetX,fg.green+lastChar   )
-            render.print_at(targetY,targetX,fg.white+targetChar )
+            obj = {}
+            obj["x"] = targetX
+            obj["y"] = lastY
+            obj["string"] = fg.green+lastChar
+            coordinateQueue.q.put(obj)
+            obj = {}
+            obj["x"] = targetX
+            obj["y"] = targetY
+            obj["string"] = fg.white+targetChar
+            coordinateQueue.q.put(obj)
     
         self.position = self.position + 1
         return True
